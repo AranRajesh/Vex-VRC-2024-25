@@ -106,14 +106,15 @@ rc_auto_loop_thread_controller_1 = Thread(rc_auto_loop_function_controller_1)
 
 #endregion VEXcode Generated Robot Configuration
 
-# ------------------------------------------
-# 
-# 	Project:      VEXcode Project
-#	Author:       VEX
-#	Created:
-#	Description:  VEXcode V5 Python Project
-# 
-# ------------------------------------------
+def intake():
+    intake.spin(FORWARD)
+def intakestop():
+    intake.stop()
+def intakereverse():
+    intake.spin(REVERSE)
+controller_1.buttonL1.pressed(intakereverse)
+controller_1.buttonR1.pressed(intake)
+controller_1.buttonR2.pressed(intakestop)
 
 # Library imports
 from vex import *
