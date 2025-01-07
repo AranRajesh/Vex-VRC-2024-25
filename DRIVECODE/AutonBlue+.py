@@ -6,6 +6,9 @@ import urandom
 brain=Brain()
 
 # Robot configuration code
+intake_motor_a = Motor(Ports.PORT2, GearSetting.RATIO_18_1, False)
+intake_motor_b = Motor(Ports.PORT3, GearSetting.RATIO_18_1, False)
+intake = MotorGroup(intake_motor_a, intake_motor_b)
 rightFront = Motor(Ports.PORT1, GearSetting.RATIO_18_1, False)
 rightMiddle = Motor(Ports.PORT2, GearSetting.RATIO_18_1, False)
 rightBack = Motor(Ports.PORT2, GearSetting.RATIO_18_1, False)
@@ -14,6 +17,7 @@ leftMiddle = Motor(Ports.PORT2, GearSetting.RATIO_18_1, False)
 leftBack = Motor(Ports.PORT2, GearSetting.RATIO_18_1, False)
 rightDrive = MotorGroup(rightFront, rightMiddle, rightBack)
 leftDrive = MotorGroup(leftFront, leftMiddle, leftBack)
+intake = MotorGroup
 bot = DriveTrain(leftDrive, rightDrive, 2.75, 15, 17.5, INCHES)
 controller_1 = Controller(PRIMARY)
 
@@ -123,3 +127,13 @@ drivetrain.drive_for(REVERSE, 17, INCHES)
 mogo_out()
 drivetrain.turn_for(RIGHT, 135, DEGREES)
 drivetrain.drive_for(FORWARD, 23.4, INCHES)
+
+def intake():
+    intake.spin(FORWARD)
+def intakestop():
+    intake.stop()
+
+    
+controller_1.buttonR1.pressed(intake)
+controller_1.buttonR2.pressed(intakestop)
+
