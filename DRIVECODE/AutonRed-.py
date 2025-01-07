@@ -103,14 +103,16 @@ rc_auto_loop_thread_controller_1 = Thread(rc_auto_loop_function_controller_1)
 
 #endregion VEXcode Generated Robot Configuration
 
-# ------------------------------------------
-# 
-# 	Project:      VEXcode Project
-#	Author:       VEX
-#	Created:
-#	Description:  VEXcode V5 Python Project
-# 
-# ------------------------------------------
+def autonoumous_red_-():
+drivetrain.drive_for(REVERSE, 20.9, INCHES)
+drivetrain.turn_for(LEFT, 45, DEGREES)
+drivetrain.drive_for(REVERSE, 17, INCHES)
+mogo_out()
+drivetrain.turn_for(RIGHT, 135, DEGREES)
+intake()
+drivetrain.drive_for(FORWARD, 23.4, INCHES)
+intakestop()
+
 
 # Library imports
 from vex import *
