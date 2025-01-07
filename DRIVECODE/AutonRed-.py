@@ -132,6 +132,8 @@ mogo_out()
 drivetrain.turn_for(RIGHT, 135, DEGREES)
 intake()
 drivetrain.drive_for(FORWARD, 25.4, INCHES)
+drivtrain.turn_for(RIGHT, 90, INCHES)
+drivtrain.drive_for(FORWARD, 44.7, INCHES)
 intakestop()
 
 
