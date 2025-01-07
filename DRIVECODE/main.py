@@ -4,7 +4,7 @@ import urandom
 
 # Brain should be defined by default
 brain=Brain()
-
+#Ashu is learning
 # Robot configuration code
 rightFront = Motor(Ports.PORT1, GearSetting.RATIO_18_1, False)
 rightMiddle = Motor(Ports.PORT2, GearSetting.RATIO_18_1, False)
