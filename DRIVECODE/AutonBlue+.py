@@ -122,11 +122,6 @@ def intake():
     intake.spin(FORWARD)
 def intakestop():
     intake.stop()
-
-# Begin project code
-
-
-    
 controller_1.buttonR1.pressed(intake)
 controller_1.buttonR2.pressed(intakestop)
 
