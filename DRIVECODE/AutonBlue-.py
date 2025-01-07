@@ -108,16 +108,15 @@ controller_1.buttonR1.pressed(intake)
 controller_1.buttonR2.pressed(intakestop)
 
 
-#endregion VEXcode Generated Robot Configuration
-
-# ------------------------------------------
-# 
-# 	Project:      VEXcode Project
-#	Author:       VEX
-#	Created:
-#	Description:  VEXcode V5 Python Project
-# 
-# ------------------------------------------
+def autonoumous_blue_-():
+drivetrain.drive_for(REVERSE, 20.9, INCHES)
+drivetrain.turn_for(RIGHT, 45, DEGREES)
+drivetrain.drive_for(REVERSE, 17, INCHES)
+mogo_out()
+drivetrain.turn_for(LEFT, 135, DEGREES)
+intake()
+drivetrain.drive_for(FORWARD, 23.4, INCHES)
+intakestop()
 
 # Library imports
 from vex import *
