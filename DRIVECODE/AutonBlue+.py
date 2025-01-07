@@ -107,14 +107,14 @@ rc_auto_loop_thread_controller_1 = Thread(rc_auto_loop_function_controller_1)
 
 #endregion VEXcode Generated Robot Configuration
 
-def mogomechin():
+def mogoin():
     mogo.set(False)
 
-def mogomechout():
+def mogoout():
     mogo.set(True)
 
-controller_1.buttonA.pressed(mogomechout)
-controller_1.buttonB.pressed(mogomechin)
+controller_1.buttonA.pressed(mogoout)
+controller_1.buttonB.pressed(mogoin)
 
 # Library imports
 from vex import *
