@@ -6,6 +6,9 @@ import urandom
 brain=Brain()
 
 # Robot configuration code
+intake_motor_a = Motor(Ports.PORT2, GearSetting.RATIO_18_1, False)
+intake_motor_b = Motor(Ports.PORT3, GearSetting.RATIO_18_1, False)
+intake = MotorGroup(intake_motor_a, intake_motor_b)
 rightFront = Motor(Ports.PORT1, GearSetting.RATIO_18_1, False)
 rightMiddle = Motor(Ports.PORT2, GearSetting.RATIO_18_1, False)
 rightBack = Motor(Ports.PORT2, GearSetting.RATIO_18_1, False)
