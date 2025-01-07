@@ -118,6 +118,10 @@ rc_auto_loop_thread_controller_1 = Thread(rc_auto_loop_function_controller_1)
 
 # Library imports
 from vex import *
+def intake():
+    intake.spin(FORWARD)
+def intakestop():
+    intake.stop()
 
 # Begin project code
 def autonoumous_red_-():
@@ -126,12 +130,10 @@ drivetrain.turn_for(LEFT, 45, DEGREES)
 drivetrain.drive_for(REVERSE, 17, INCHES)
 mogo_out()
 drivetrain.turn_for(RIGHT, 135, DEGREES)
+intake()
 drivetrain.drive_for(FORWARD, 23.4, INCHES)
+intakestop()
 
-def intake():
-    intake.spin(FORWARD)
-def intakestop():
-    intake.stop()
 
     
 controller_1.buttonR1.pressed(intake)
