@@ -104,8 +104,14 @@ remote_control_code_enabled = True
 
 rc_auto_loop_thread_controller_1 = Thread(rc_auto_loop_function_controller_1)
 
-#endregion VEXcode Generated Robot Configuration
+def mogoin():
+    mogo.set(False)
 
+def mogoout():
+    mogo.set(True)
+
+controller_1.buttonA.pressed(mogoout)
+controller_1.buttonB.pressed(mogoin)
 def intake():
     intake.spin(FORWARD)
 def intakestop():
