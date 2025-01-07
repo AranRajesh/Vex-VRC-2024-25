@@ -124,15 +124,6 @@ def intakestop():
     intake.stop()
 
 # Begin project code
-def autonoumous_red_-():
-drivetrain.drive_for(REVERSE, 20.9, INCHES)
-drivetrain.turn_for(LEFT, 45, DEGREES)
-drivetrain.drive_for(REVERSE, 17, INCHES)
-mogo_out()
-drivetrain.turn_for(RIGHT, 135, DEGREES)
-intake()
-drivetrain.drive_for(FORWARD, 23.4, INCHES)
-intakestop()
 
 
     
