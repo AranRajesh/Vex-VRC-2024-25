@@ -122,6 +122,9 @@ def intake():
     intake.spin(FORWARD)
 def intakestop():
     intake.stop()
+def intakereverse():
+    intake.spin(REVERSE)
+controller_1.buttonL1.pressed(intakereverse)
 controller_1.buttonR1.pressed(intake)
 controller_1.buttonR2.pressed(intakestop)
 
