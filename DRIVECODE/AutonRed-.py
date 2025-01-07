@@ -114,7 +114,14 @@ controller_1.buttonL1.pressed(intakereverse)
 controller_1.buttonR1.pressed(intake)
 controller_1.buttonR2.pressed(intakestop)
 
+def mogoin():
+    mogo.set(False)
 
+def mogoout():
+    mogo.set(True)
+
+controller_1.buttonA.pressed(mogoout)
+controller_1.buttonB.pressed(mogoin)
 
 
 def autonoumous_red_-():
