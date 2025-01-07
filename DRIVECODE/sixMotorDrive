@@ -79,12 +79,12 @@ def reverseIntake():
 controller_1.buttonR2.pressed(startIntake)
 controller_1.buttonR1.pressed(reverseIntake)
 controller_1.buttonL2.pressed(stopIntake)
-controller_1.buttonB.pressed(mogoout)
-controller_1.buttonA.pressed(mogoin)
+controller_1.buttonA.pressed(mogoout)
+controller_1.buttonB.pressed(mogoin)
 
 # Fun Controller message
 controller_1.rumble(".-.-.")
-controller_1.screen.print("Ready to DRIVE!")
+controller_1.screen.print("Ready to drive! Good luck")
 
 # define variables used for controlling motors based on controller inputs
 drivetrain_l_needs_to_be_stopped_controller_1 = False
@@ -155,7 +155,6 @@ rc_auto_loop_thread_controller_1 = Thread(rc_auto_loop_function_controller_1)
 #	Description:  VEXcode V5 Python Project
 # 
 # ------------------------------------------
-
 
 # Library imports
 from vex import *
