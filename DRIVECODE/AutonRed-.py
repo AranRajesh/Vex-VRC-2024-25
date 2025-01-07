@@ -101,7 +101,13 @@ remote_control_code_enabled = True
 
 rc_auto_loop_thread_controller_1 = Thread(rc_auto_loop_function_controller_1)
 
-#endregion VEXcode Generated Robot Configuration
+def intake():
+    intake.spin(FORWARD)
+def intakestop():
+    intake.stop()
+controller_1.buttonR1.pressed(intake)
+controller_1.buttonR2.pressed(intakestop)
+
 
 def autonoumous_red_-():
 drivetrain.drive_for(REVERSE, 20.9, INCHES)
