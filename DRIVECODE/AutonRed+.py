@@ -16,6 +16,10 @@ leftBack = Motor(Ports.PORT6, GearSetting.RATIO_18_1, True)
 rightDrive = MotorGroup(rightFront, rightMiddle, rightBack)
 leftDrive = MotorGroup(leftFront, leftMiddle, leftBack)
 
+
+# Drivetrain Inertial
+drivetrain_inertial = Inertial(Ports.PORT3)
+
 #Intake Motors
 intakeFront = Motor(Ports.PORT5, GearSetting.RATIO_18_1, True)
 intakeConveyor = Motor(Ports.PORT10, GearSetting.RATIO_18_1, False)
@@ -25,7 +29,7 @@ fullIntake= MotorGroup(intakeFront, intakeConveyor)
 mogo = DigitalOut(brain.three_wire_port.a)
 
 # Defining drivetrain using two motor groups
-bot = DriveTrain(leftDrive, rightDrive, 2.75, 15, 17.5, INCHES)
+bot = SmartDrive(leftDrive, rightDrive, drivetrain_inertial, 2.75, 15, 17.5, INCHES)
 
 # Getting controller defined
 controller_1 = Controller(PRIMARY)
@@ -144,6 +148,8 @@ def rc_auto_loop_function_controller_1():
 remote_control_code_enabled = True
 
 rc_auto_loop_thread_controller_1 = Thread(rc_auto_loop_function_controller_1)
+
+drivetrain.set_heading(0, degrees)
 
 #endregion VEXcode Generated Robot Configuration
 # Library imports
