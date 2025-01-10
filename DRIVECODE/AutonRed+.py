@@ -76,16 +76,6 @@ def reverseIntake():
 
 # Defining controller buttons and actions
 
-controller_1.buttonR2.pressed(startIntake)
-controller_1.buttonR1.pressed(reverseIntake)
-controller_1.buttonL2.pressed(stopIntake)
-controller_1.buttonA.pressed(mogoout)
-controller_1.buttonB.pressed(mogoin)
-
-# Fun Controller message
-controller_1.rumble(".-.-.")
-controller_1.screen.print("Ready to drive! Good luck")
-
 # define variables used for controlling motors based on controller inputs
 drivetrain_l_needs_to_be_stopped_controller_1 = False
 drivetrain_r_needs_to_be_stopped_controller_1 = False
@@ -145,8 +135,6 @@ remote_control_code_enabled = True
 
 rc_auto_loop_thread_controller_1 = Thread(rc_auto_loop_function_controller_1)
 
-
-
 # Calibrating and reseting inertial
 inertial.calibrate()
 bot.set_heading(0)
@@ -164,17 +152,39 @@ bot.set_heading(0)
 # Library imports
 from vex import *
 
-# Auton code
-bot.drive_for(REVERSE, 7,INCHES)
-bot.turn_for(RIGHT, 26,DEGREES)
-bot.drive_for(REVERSE, 4,INCHES)
-mogoout()
-bot.turn_for(LEFT, 120,DEGREES)
-startIntake()
-bot.drive_for(FORWARD, 6,INCHES)
-bot.turn_for(LEFT, 130,DEGREES)
-bot.set_drive_velocity(100,PERCENT)
-bot.drive(FORWARD)
-wait(0.5,SECONDS)
-brain.program_stop()
+competition = Competition(driver_control, autonomous)
 
+
+def autonomous():
+    controller_1.screen.print("Running Auton Red+")
+    # Auton code
+    bot.drive_for(REVERSE, 7,INCHES)
+    bot.turn_for(RIGHT, 26,DEGREES)
+    bot.drive_for(REVERSE, 4,INCHES)
+    mogoout()
+    bot.turn_for(LEFT, 120,DEGREES)
+    startIntake()
+    bot.drive_for(FORWARD, 6,INCHES)
+    bot.turn_for(LEFT, 130,DEGREES)
+    bot.set_drive_velocity(100,PERCENT)
+    bot.drive(FORWARD)
+    wait(0.5,SECONDS)
+    brain.program_stop()
+
+def driver_control():
+    # Fun Controller message
+    controller_1.rumble(".-.-.")
+    controller_1.screen.print("Ready to drive :D")
+
+    # Setting buttons to control various aspects of robot
+    controller_1.buttonR2.pressed(startIntake)
+    controller_1.buttonR1.pressed(reverseIntake)
+    controller_1.buttonL2.pressed(stopIntake)
+    controller_1.buttonA.pressed(mogoout)
+    controller_1.buttonB.pressed(mogoin)
+    
+    # Calling joystick drive control function
+    rc_auto_loop_function_controller_1()
+
+
+    
