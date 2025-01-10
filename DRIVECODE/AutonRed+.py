@@ -152,7 +152,7 @@ bot.set_heading(0)
 # Library imports
 from vex import *
 
-competition = Competition(driver_control, autonomous)
+
 
 
 def autonomous():
@@ -169,7 +169,7 @@ def autonomous():
     bot.set_drive_velocity(100,PERCENT)
     bot.drive(FORWARD)
     wait(0.5,SECONDS)
-    brain.program_stop()
+    bot.stop()
 
 def driver_control():
     # Fun Controller message
@@ -185,6 +185,7 @@ def driver_control():
     
     # Calling joystick drive control function
     rc_auto_loop_function_controller_1()
-
+    
+competition = Competition(driver_control, autonomous)
 
     
