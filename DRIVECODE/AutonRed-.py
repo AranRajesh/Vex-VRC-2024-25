@@ -76,16 +76,6 @@ def reverseIntake():
 
 # Defining controller buttons and actions
 
-controller_1.buttonR2.pressed(startIntake)
-controller_1.buttonR1.pressed(reverseIntake)
-controller_1.buttonL2.pressed(stopIntake)
-controller_1.buttonA.pressed(mogoout)
-controller_1.buttonB.pressed(mogoin)
-
-# Fun Controller message
-controller_1.rumble(".-.-.")
-controller_1.screen.print("Ready to drive! Good luck")
-
 # define variables used for controlling motors based on controller inputs
 drivetrain_l_needs_to_be_stopped_controller_1 = False
 drivetrain_r_needs_to_be_stopped_controller_1 = False
@@ -144,47 +134,71 @@ def rc_auto_loop_function_controller_1():
 remote_control_code_enabled = True
 
 rc_auto_loop_thread_controller_1 = Thread(rc_auto_loop_function_controller_1)
- 
+
+# Calibrating and reseting inertial
 inertial.calibrate()
 bot.set_heading(0)
 #endregion VEXcode Generated Robot Configuration
 
 # ------------------------------------------
 # 
-# 	Project:      VEXcode Project
-#	Author:       VEX
-#	Created:
-#	Description:  VEXcode V5 Python Project
+# 	Project:      Red Minus Auton
+#	Author:       Aranyan
+#	Created:      1/8/24
+#	Description:  Auton
 # 
 # ------------------------------------------
 
 # Library imports
 from vex import *
-bot.set_turn_velocity(10,PERCENT)
-bot.set_drive_velocity(35,PERCENT)
-bot.drive_for(REVERSE, 3,INCHES)
 
-bot.turn_for(RIGHT, 22)
 
-bot.drive_for(REVERSE, 8, INCHES)
-mogoout()
 
-bot.turn_for(RIGHT, 64)
-startIntake()
-bot.drive_for(FORWARD, 5.2,INCHES)
-bot.turn_for(RIGHT, 77)
 
-bot.drive_for(FORWARD, 4,INCHES)
-wait(0.7,SECONDS)
-print(brain.timer.time(SECONDS))
-bot.set_turn_velocity(20,PERCENT)
-bot.set_drive_velocity(100,PERCENT)
-bot.drive_for(REVERSE, 6,INCHES)
-bot.turn_for(LEFT, 106,DEGREES)
-bot.drive(REVERSE)
-print(brain.timer.time(SECONDS))
-while brain.timer.time(SECONDS) == 15: 
-    wait(0.1,SECONDS)
+def autonomous():
+    controller_1.screen.print("Running Autoun Red-"
+    bot.set_turn_velocity(10,PERCENT)
+    bot.set_drive_velocity(35,PERCENT)
+    bot.drive_for(REVERSE, 3,INCHES)
 
-brain.program_stop()
+    bot.turn_for(RIGHT, 22)
 
+    bot.drive_for(REVERSE, 8, INCHES)
+    mogoout()
+
+    bot.turn_for(RIGHT, 64)
+    startIntake()
+    bot.drive_for(FORWARD, 5.2,INCHES)
+    bot.turn_for(RIGHT, 77)
+
+    bot.drive_for(FORWARD, 4,INCHES)
+    wait(0.7,SECONDS)
+    print(brain.timer.time(SECONDS))
+    bot.set_turn_velocity(20,PERCENT)
+    bot.set_drive_velocity(100,PERCENT)
+    bot.drive_for(REVERSE, 6,INCHES)
+    bot.turn_for(LEFT, 106,DEGREES)
+    bot.drive(REVERSE)
+    print(brain.timer.time(SECONDS))
+    while brain.timer.time(SECONDS) !=  15: 
+        bot.stop()
+
+
+def driver_control():
+    # Fun Controller message
+    controller_1.rumble(".-.-.")
+    controller_1.screen.print("Ready to drive :D")
+
+    # Setting buttons to control various aspects of robot
+    controller_1.buttonR2.pressed(startIntake)
+    controller_1.buttonR1.pressed(reverseIntake)
+    controller_1.buttonL2.pressed(stopIntake)
+    controller_1.buttonA.pressed(mogoout)
+    controller_1.buttonB.pressed(mogoin)
+    
+    # Calling joystick drive control function
+    rc_auto_loop_function_controller_1()
+    
+competition = Competition(driver_control, autonomous)
+
+    
