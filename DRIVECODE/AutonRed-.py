@@ -156,7 +156,7 @@ from vex import *
 
 
 def autonomous():
-    controller_1.screen.print("Running Autoun Red-"
+    controller_1.screen.print("Running Autoun Red-")
     bot.set_turn_velocity(10,PERCENT)
     bot.set_drive_velocity(35,PERCENT)
     bot.drive_for(REVERSE, 3,INCHES)
