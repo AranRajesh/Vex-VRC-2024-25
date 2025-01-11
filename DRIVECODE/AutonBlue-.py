@@ -10,26 +10,22 @@ brain=Brain()
 rightFront = Motor(Ports.PORT4, GearSetting.RATIO_18_1, False)
 rightMiddle = Motor(Ports.PORT7, GearSetting.RATIO_18_1, False)
 rightBack = Motor(Ports.PORT9, GearSetting.RATIO_18_1, True)
-leftFront = Motor(Ports.PORT2, GearSetting.RATIO_18_1, False)
-leftMiddle = Motor(Ports.PORT3, GearSetting.RATIO_18_1, False)
-leftBack = Motor(Ports.PORT6, GearSetting.RATIO_18_1, True)
+leftFront = Motor(Ports.PORT2, GearSetting.RATIO_18_1, True)
+leftMiddle = Motor(Ports.PORT3, GearSetting.RATIO_18_1, True)
+leftBack = Motor(Ports.PORT6, GearSetting.RATIO_18_1, False)
 rightDrive = MotorGroup(rightFront, rightMiddle, rightBack)
 leftDrive = MotorGroup(leftFront, leftMiddle, leftBack)
-
-
-# Drivetrain Inertial
-drivetrain_inertial = Inertial(Ports.PORT3)
 
 #Intake Motors
 intakeFront = Motor(Ports.PORT5, GearSetting.RATIO_18_1, True)
 intakeConveyor = Motor(Ports.PORT10, GearSetting.RATIO_18_1, False)
 fullIntake= MotorGroup(intakeFront, intakeConveyor)
-
+inertial = Inertial(Ports.PORT20)
 # Mogo Mech
 mogo = DigitalOut(brain.three_wire_port.a)
 
 # Defining drivetrain using two motor groups
-bot = SmartDrive(leftDrive, rightDrive, drivetrain_inertial, 2.75, 15, 17.5, INCHES)
+bot = SmartDrive(leftDrive, rightDrive, inertial, 110, 12.75, 12, INCHES)
 
 # Getting controller defined
 controller_1 = Controller(PRIMARY)
@@ -80,16 +76,6 @@ def reverseIntake():
 
 # Defining controller buttons and actions
 
-controller_1.buttonR2.pressed(startIntake)
-controller_1.buttonR1.pressed(reverseIntake)
-controller_1.buttonL2.pressed(stopIntake)
-controller_1.buttonA.pressed(mogoout)
-controller_1.buttonB.pressed(mogoin)
-
-# Fun Controller message
-controller_1.rumble(".-.-.")
-controller_1.screen.print("Ready to drive! Good luck")
-
 # define variables used for controlling motors based on controller inputs
 drivetrain_l_needs_to_be_stopped_controller_1 = False
 drivetrain_r_needs_to_be_stopped_controller_1 = False
@@ -105,8 +91,8 @@ def rc_auto_loop_function_controller_1():
             # calculate the drivetrain motor velocities from the controller joystick axies
             # left = axis3 + axis1
             # right = axis3 - axis1
-            drivetrain_left_side_speed = controller_1.axis1.position() + controller_1.axis3.position()
-            drivetrain_right_side_speed = controller_1.axis1.position() - controller_1.axis3.position()
+            drivetrain_left_side_speed = controller_1.axis3.position() + controller_1.axis1.position()
+            drivetrain_right_side_speed = controller_1.axis3.position() - controller_1.axis1.position()
             
             # check if the value is inside of the deadband range
             if drivetrain_left_side_speed < 5 and drivetrain_left_side_speed > -5:
@@ -136,11 +122,11 @@ def rc_auto_loop_function_controller_1():
             # only tell the left drive motor to spin if the values are not in the deadband range
             if drivetrain_l_needs_to_be_stopped_controller_1:
                 leftDrive.set_velocity(drivetrain_left_side_speed, PERCENT)
-                leftDrive.spin(REVERSE)
+                leftDrive.spin(FORWARD)
             # only tell the right drive motor to spin if the values are not in the deadband range
             if drivetrain_r_needs_to_be_stopped_controller_1:
                 rightDrive.set_velocity(drivetrain_right_side_speed, PERCENT)
-                rightDrive.spin(REVERSE)
+                rightDrive.spin(FORWARD)
         # wait before repeating the process
         wait(20, MSEC)
 
@@ -149,24 +135,70 @@ remote_control_code_enabled = True
 
 rc_auto_loop_thread_controller_1 = Thread(rc_auto_loop_function_controller_1)
 
-drivetrain.set_heading(0, degrees)
-
+# Calibrating and reseting inertial
+inertial.calibrate()
+bot.set_heading(0)
 #endregion VEXcode Generated Robot Configuration
 
-
-def autonoumous_blue_-():
-drivetrain.drive_for(REVERSE, 20.9, INCHES)
-drivetrain.turn_for(RIGHT, 45, DEGREES)
-drivetrain.drive_for(REVERSE, 17, INCHES)
-mogoout()
-drivetrain.turn_for(LEFT, 135, DEGREES)
-intake()
-drivetrain.drive_for(FORWARD, 25.4, INCHES)
-drivtrain.turn_for(RIGHT, 90, INCHES)
-drivtrain.drive_for(FORWARD, 44.7, INCHES)
-intakestop()
+# ------------------------------------------
+# 
+# 	Project:      Blue Minus Auton
+#	Author:       Aranyan
+#	Created:      1/8/24
+#	Description:  Auton
+# 
+# ------------------------------------------
 
 # Library imports
 from vex import *
 
-# Begin project code
+
+
+
+def autonomous():
+    controller_1.screen.print("Running Autoun Blue-")
+    bot.set_turn_velocity(10,PERCENT)
+    bot.set_drive_velocity(35,PERCENT)
+    bot.drive_for(REVERSE, 3,INCHES)
+
+    bot.turn_for(LEFT, 22)
+
+    bot.drive_for(REVERSE, 8, INCHES)
+    mogoout()
+
+    bot.turn_for(LEFT, 64)
+    startIntake()
+    bot.drive_for(FORWARD, 5.2,INCHES)
+    bot.turn_for(LEFT, 77)
+
+    bot.drive_for(FORWARD, 4,INCHES)
+    wait(0.7,SECONDS)
+    print(brain.timer.time(SECONDS))
+    bot.set_turn_velocity(20,PERCENT)
+    bot.set_drive_velocity(100,PERCENT)
+    bot.drive_for(REVERSE, 6,INCHES)
+    bot.turn_for(RIGHT, 106,DEGREES)
+    bot.drive(REVERSE)
+    print(brain.timer.time(SECONDS))
+    while brain.timer.time(SECONDS) !=  15: 
+        bot.stop()
+
+
+def driver_control():
+    # Fun Controller message
+    controller_1.rumble(".-.-.")
+    controller_1.screen.print("Ready to drive :D")
+
+    # Setting buttons to control various aspects of robot
+    controller_1.buttonR2.pressed(startIntake)
+    controller_1.buttonR1.pressed(reverseIntake)
+    controller_1.buttonL2.pressed(stopIntake)
+    controller_1.buttonA.pressed(mogoout)
+    controller_1.buttonB.pressed(mogoin)
+    
+    # Calling joystick drive control function
+    rc_auto_loop_function_controller_1()
+    
+competition = Competition(driver_control, autonomous)
+
+    
