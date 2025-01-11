@@ -76,11 +76,6 @@ def reverseIntake():
 
 # Defining controller buttons and actions
 
-controller_1.buttonR2.pressed(startIntake)
-controller_1.buttonR1.pressed(reverseIntake)
-controller_1.buttonL2.pressed(stopIntake)
-controller_1.buttonA.pressed(mogoout)
-controller_1.buttonB.pressed(mogoin)
 
 # Fun Controller message
 controller_1.rumble(".-.-.")
@@ -145,48 +140,69 @@ remote_control_code_enabled = True
 
 rc_auto_loop_thread_controller_1 = Thread(rc_auto_loop_function_controller_1)
  
-inertial.calibrate()
-bot.set_heading(0)
-wait(0.5,SECONDS)
+
 #endregion VEXcode Generated Robot Configuration
 
-# ------------------------------------------
-# 
-# 	Project:      VEXcode Project
-#	Author:       VEX
-#	Created:
-#	Description:  VEXcode V5 Python Project
-# 
 
-# Library imports
+
 from vex import *
-bot.set_drive_velocity(40,PERCENT)
-bot.set_turn_velocity(15,PERCENT)
-bot.drive_for(REVERSE, 3,INCHES)
-bot.turn_for(RIGHT, 85,DEGREES)
-bot.set_drive_velocity(50,PERCENT)
-bot.drive_for(REVERSE, 9,INCHES)
-mogoout()
-bot.turn_for(RIGHT, 84,DEGREES)
-startIntake()
-bot.drive_for(FORWARD, 8,INCHES)
-bot.turn_for(RIGHT, 89,DEGREES)
-bot.drive_for(FORWARD, 7,INCHES)
-bot.turn_for(RIGHT, 87,DEGREES)
-bot.drive_for(FORWARD, 6,INCHES)
-wait(0.3,SECONDS)
-bot.drive_for(FORWARD, 5,INCHES)
-bot.drive_for(REVERSE, 10,INCHES)
-bot.turn_for(LEFT, 37,DEGREES)
-bot.drive_for(FORWARD, 6,INCHES)
-wait(3, SECONDS)
-stopIntake()
-reverseIntake()
-wait(0.5,SECONDS)
-stopIntake()
-bot.drive_for(REVERSE, 3,INCHES)
-bot.turn_for(LEFT, 160,DEGREES)
-bot.drive_for(REVERSE, 7,INCHES)
-mogoin()
-print(brain.timer.time(SECONDS))
-print('LETS GO GAMMA SQUAD')
+def driver_control():
+
+    controller_1.screen.print("Ready to Drive :D")
+    controller_1.buttonR2.pressed(startIntake)
+    controller_1.buttonR1.pressed(reverseIntake) 
+    controller_1.buttonL2.pressed(stopIntake)
+    controller_1.buttonA.pressed(mogoout)
+    controller_1.buttonB.pressed(mogoin)
+    while True:
+        if brain.timer.time(SECONDS) == 10:
+            controller_1.rumble(".....")
+        if brain.timer.time(SECONDS) == 20:
+            controller_1.rumble("....")
+        if brain.timer.time(SECONDS) == 30:
+            controller_1.rumble("...")
+        if brain.timer.time(SECONDS) == 40:
+            controller_1.rumble("..")
+        if brain.timer.time(SECONDS) == 50:
+            controller_1.rumble(".")
+
+        
+    rc_auto_loop_function_controller_1()
+
+def autonomous():
+    inertial.calibrate()
+    bot.set_heading(0)
+    
+    controller_1.screen.print("Running Skills Autoun")
+    
+    controller_1.screen.print("I PRAY TO THE RNG GODS")
+    bot.set_drive_velocity(40,PERCENT)
+    bot.set_turn_velocity(15,PERCENT)
+    bot.drive_for(REVERSE, 3,INCHES)
+    bot.turn_for(RIGHT, 85,DEGREES)
+    bot.set_drive_velocity(50,PERCENT)
+    bot.drive_for(REVERSE, 9,INCHES)
+    mogoout()
+    bot.turn_for(RIGHT, 84,DEGREES)
+    startIntake()
+    bot.drive_for(FORWARD, 8,INCHES)
+    bot.turn_for(RIGHT, 89,DEGREES)
+    bot.drive_for(FORWARD, 7,INCHES)
+    bot.turn_for(RIGHT, 87,DEGREES)
+    bot.drive_for(FORWARD, 6,INCHES)
+    wait(0.3,SECONDS)
+    bot.drive_for(FORWARD, 5,INCHES)
+    bot.drive_for(REVERSE, 10,INCHES)
+    bot.turn_for(LEFT, 37,DEGREES)
+    bot.drive_for(FORWARD, 6,INCHES)
+    wait(3, SECONDS)
+    stopIntake()
+    reverseIntake()
+    wait(0.5,SECONDS)
+    stopIntake()
+    bot.drive_for(REVERSE, 3,INCHES)
+    bot.turn_for(LEFT, 160,DEGREES)
+    bot.drive_for(REVERSE, 7,INCHES)
+    mogoin()
+
+competition = Competition(driver_control, autonomous)
