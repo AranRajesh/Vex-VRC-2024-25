@@ -204,5 +204,7 @@ def autonomous():
     bot.turn_for(LEFT, 160,DEGREES)
     bot.drive_for(REVERSE, 7,INCHES)
     mogoin()
+    bot.set_drive_velocity(100,PERCENT)
+    bot.drive_for(FORWARD, 10,INCHES)
 
 competition = Competition(driver_control, autonomous)
