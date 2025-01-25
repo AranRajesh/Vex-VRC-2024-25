@@ -6,32 +6,30 @@ import urandom
 brain=Brain()
 
 # Robot configuration code
-# Different drivetrain motors
-rightFront = Motor(Ports.PORT4, GearSetting.RATIO_18_1, False)
-rightMiddle = Motor(Ports.PORT7, GearSetting.RATIO_18_1, False)
-rightBack = Motor(Ports.PORT9, GearSetting.RATIO_18_1, True)
-leftFront = Motor(Ports.PORT2, GearSetting.RATIO_18_1, True)
-leftMiddle = Motor(Ports.PORT3, GearSetting.RATIO_18_1, True)
-leftBack = Motor(Ports.PORT6, GearSetting.RATIO_18_1, False)
-rightDrive = MotorGroup(rightFront, rightMiddle, rightBack)
-leftDrive = MotorGroup(leftFront, leftMiddle, leftBack)
+leftsideFront = Motor(Ports.PORT18, GearSetting.RATIO_18_1, True)
+leftsideMiddle = Motor(Ports.PORT2, GearSetting.RATIO_18_1, False)
+leftsideBack = Motor(Ports.PORT16, GearSetting.RATIO_18_1, True)
+leftside = MotorGroup(leftsideFront, leftsideMiddle, leftsideBack)
+rightsideFront = Motor(Ports.PORT19, GearSetting.RATIO_18_1, False)
+rightsideMiddle = Motor(Ports.PORT5, GearSetting.RATIO_18_1, True)
+rightsideBack = Motor(Ports.PORT7, GearSetting.RATIO_18_1, False)
+rightside = MotorGroup(rightsideFront, rightsideMiddle, rightsideBack)
 
-#Intake Motors
-intakeFront = Motor(Ports.PORT5, GearSetting.RATIO_18_1, True)
-intakeConveyor = Motor(Ports.PORT10, GearSetting.RATIO_18_1, False)
-fullIntake= MotorGroup(intakeFront, intakeConveyor)
-inertial = Inertial(Ports.PORT20)
-# Mogo Mech
-mogo = DigitalOut(brain.three_wire_port.a)
+# Bottom INtake : 10
+bottomIntake = Motor(Ports.PORT10, GearSetting.RATIO_18_1, False)
+topIntake = Motor(Ports.PORT8, GearSetting.RATIO_6_1, True)
 
-# Defining drivetrain using two motor groups
-bot = SmartDrive(leftDrive, rightDrive, inertial, 110, 12.75, 12, INCHES)
-
-# Getting controller defined
+fullIntake = MotorGroup(bottomIntake,topIntake)
+#Top: 8
+mogomech = DigitalOut(brain.three_wire_port.c)
+bot = DriveTrain(rightside, leftside, 110, 12.75, 12, INCHES)
 controller_1 = Controller(PRIMARY)
+
 
 # wait for rotation sensor to fully initialize
 wait(30, MSEC)
+
+
 # Make random actually random
 def initializeRandomSeed():
     wait(100, MSEC)
@@ -50,110 +48,41 @@ def play_vexcode_sound(sound_name):
 
 # add a small delay to make sure we don't print in the middle of the REPL header
 wait(200, MSEC)
-
 # clear the console to make sure we don't have the REPL in the console
 print("\033[2J")
 
-# Defining mogo mech functions to control pistons
-def mogoout():
-    mogo.set(True)
-
-def mogoin():
-    mogo.set(False)
-
-
-# Defining intake functions for intake toggle
-def startIntake():
-    fullIntake.set_velocity(100,PERCENT)
-    fullIntake.spin(FORWARD)
-
-def stopIntake():
-    fullIntake.stop()
-
-def reverseIntake():
-    fullIntake.set_velocity(100,PERCENT)
-    fullIntake.spin(REVERSE)
-
-# Defining controller buttons and actions
-
-
-# Fun Controller message
-controller_1.rumble(".-.-.")
-controller_1.screen.print("Ready to drive! Good luck")
-
-# define variables used for controlling motors based on controller inputs
-drivetrain_l_needs_to_be_stopped_controller_1 = False
-drivetrain_r_needs_to_be_stopped_controller_1 = False
-
-# define a task that will handle monitoring inputs from controller_1
-def rc_auto_loop_function_controller_1():
-    global drivetrain_l_needs_to_be_stopped_controller_1, drivetrain_r_needs_to_be_stopped_controller_1, remote_control_code_enabled
-    # process the controller input every 20 milliseconds
-    # update the motors based on the input values
+def joystickDrive():
     while True:
-        if remote_control_code_enabled:
-            
-            # calculate the drivetrain motor velocities from the controller joystick axies
-            # left = axis3 + axis1
-            # right = axis3 - axis1
-            drivetrain_left_side_speed = controller_1.axis3.position() + controller_1.axis1.position()
-            drivetrain_right_side_speed = controller_1.axis3.position() - controller_1.axis1.position()
-            
-            # check if the value is inside of the deadband range
-            if drivetrain_left_side_speed < 5 and drivetrain_left_side_speed > -5:
-                # check if the left motor has already been stopped
-                if drivetrain_l_needs_to_be_stopped_controller_1:
-                    # stop the left drive motor
-                    leftDrive.stop()
-                    # tell the code that the left motor has been stopped
-                    drivetrain_l_needs_to_be_stopped_controller_1 = False
-            else:
-                # reset the toggle so that the deadband code knows to stop the left motor next
-                # time the input is in the deadband range
-                drivetrain_l_needs_to_be_stopped_controller_1 = True
-            # check if the value is inside of the deadband range
-            if drivetrain_right_side_speed < 5 and drivetrain_right_side_speed > -5:
-                # check if the right motor has already been stopped
-                if drivetrain_r_needs_to_be_stopped_controller_1:
-                    # stop the right drive motor
-                    rightDrive.stop()
-                    # tell the code that the right motor has been stopped
-                    drivetrain_r_needs_to_be_stopped_controller_1 = False
-            else:
-                # reset the toggle so that the deadband code knows to stop the right motor next
-                # time the input is in the deadband range
-                drivetrain_r_needs_to_be_stopped_controller_1 = True
-            
-            # only tell the left drive motor to spin if the values are not in the deadband range
-            if drivetrain_l_needs_to_be_stopped_controller_1:
-                leftDrive.set_velocity(drivetrain_left_side_speed, PERCENT)
-                leftDrive.spin(FORWARD)
-            # only tell the right drive motor to spin if the values are not in the deadband range
-            if drivetrain_r_needs_to_be_stopped_controller_1:
-                rightDrive.set_velocity(drivetrain_right_side_speed, PERCENT)
-                rightDrive.spin(FORWARD)
-        # wait before repeating the process
-        wait(20, MSEC)
+        leftside.set_velocity(controller_1.axis1.position() + controller_1.axis3.position(),PERCENT)
+        rightside.set_velocity(controller_1.axis3.position() - controller_1.axis1.position(),PERCENT)
+        leftside.spin(FORWARD)
+        rightside.spin(FORWARD)
 
-# define variable for remote controller enable/disable
-remote_control_code_enabled = True
+def nonDriveComponents():
+    def activateMogo():
+        mogomech.set(True)
 
-rc_auto_loop_thread_controller_1 = Thread(rc_auto_loop_function_controller_1)
- 
+    def deactivateMogo():
+        mogomech.set(False)
 
-#endregion VEXcode Generated Robot Configuration
+    def startIntake():
+        fullIntake.set_velocity(100,PERCENT)
+        fullIntake.spin(FORWARD)
 
+    def stopIntake():
+        fullIntake.stop()
 
-
-from vex import *
-def driver_control():
-
-    controller_1.screen.print("Ready to Drive :D")
+    def reverseIntake():
+        fullIntake.set_velocity(100,PERCENT)
+        fullIntake.spin(REVERSE)
+    
     controller_1.buttonR2.pressed(startIntake)
-    controller_1.buttonR1.pressed(reverseIntake) 
+    controller_1.buttonR1.pressed(reverseIntake)
     controller_1.buttonL2.pressed(stopIntake)
-    controller_1.buttonA.pressed(mogoout)
-    controller_1.buttonB.pressed(mogoin)
+    controller_1.buttonY.pressed(activateMogo)
+    controller_1.buttonB.pressed(deactivateMogo)
+
+def rumbleBumble():
     while True:
         if brain.timer.time(SECONDS) == 10:
             controller_1.rumble(".....")
@@ -166,45 +95,6 @@ def driver_control():
         if brain.timer.time(SECONDS) == 50:
             controller_1.rumble(".")
 
-        
-    rc_auto_loop_function_controller_1()
-
-def autonomous():
-    inertial.calibrate()
-    bot.set_heading(0)
-    
-    controller_1.screen.print("Running Skills Autoun")
-    
-    controller_1.screen.print("I PRAY TO THE RNG GODS")
-    bot.set_drive_velocity(40,PERCENT)
-    bot.set_turn_velocity(15,PERCENT)
-    bot.drive_for(REVERSE, 3,INCHES)
-    bot.turn_for(RIGHT, 85,DEGREES)
-    bot.set_drive_velocity(50,PERCENT)
-    bot.drive_for(REVERSE, 9,INCHES)
-    mogoout()
-    bot.turn_for(RIGHT, 84,DEGREES)
-    startIntake()
-    bot.drive_for(FORWARD, 8,INCHES)
-    bot.turn_for(RIGHT, 89,DEGREES)
-    bot.drive_for(FORWARD, 7,INCHES)
-    bot.turn_for(RIGHT, 87,DEGREES)
-    bot.drive_for(FORWARD, 6,INCHES)
-    wait(0.3,SECONDS)
-    bot.drive_for(FORWARD, 5,INCHES)
-    bot.drive_for(REVERSE, 10,INCHES)
-    bot.turn_for(LEFT, 34,DEGREES)
-    bot.drive_for(FORWARD, 7,INCHES)
-    wait(3, SECONDS)
-    stopIntake()
-    reverseIntake()
-    wait(0.5,SECONDS)
-    stopIntake()
-    bot.drive_for(REVERSE, 4,INCHES)
-    bot.turn_for(LEFT, 160,DEGREES)
-    bot.drive_for(REVERSE, 7,INCHES)
-    mogoin()
-    bot.set_drive_velocity(100,PERCENT)
-    bot.drive_for(FORWARD, 10,INCHES)
-
-competition = Competition(driver_control, autonomous)
+driveThread = Thread(joystickDrive)
+nonDriveComponentsThread = Thread(nonDriveComponents)
+rumbleBumbleThread = Thread(rumbleBumble)
