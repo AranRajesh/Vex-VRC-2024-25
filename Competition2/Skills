@@ -17,10 +17,11 @@ rightside = MotorGroup(rightsideFront, rightsideMiddle, rightsideBack)
 
 # Bottom INtake : 10
 bottomIntake = Motor(Ports.PORT10, GearSetting.RATIO_18_1, False)
+#Top: 8
 topIntake = Motor(Ports.PORT8, GearSetting.RATIO_6_1, True)
 
 fullIntake = MotorGroup(bottomIntake,topIntake)
-#Top: 8
+
 mogomech = DigitalOut(brain.three_wire_port.c)
 bot = DriveTrain(rightside, leftside, 110, 12.75, 12, INCHES)
 controller_1 = Controller(PRIMARY)
@@ -53,8 +54,22 @@ print("\033[2J")
 
 def joystickDrive():
     while True:
-        leftside.set_velocity(controller_1.axis1.position() + controller_1.axis3.position(),PERCENT)
-        rightside.set_velocity(controller_1.axis3.position() - controller_1.axis1.position(),PERCENT)
+        potentialLeftSpeed = controller_1.axis1.position() + controller_1.axis3.position()
+        potentialRightSpeed = controller_1.axis3.position() - controller_1.axis1.position()
+        if potentialLeftSpeed > potentialRightSpeed:
+            leftside.set_velocity(potentialLeftSpeed / 2,PERCENT)
+            rightside.set_velocity(potentialRightSpeed / 2,PERCENT)
+
+
+        elif potentialLeftSpeed < potentialRightSpeed:
+            leftside.set_velocity(potentialLeftSpeed / 2,PERCENT)
+            rightside.set_velocity(potentialRightSpeed / 2,PERCENT)
+
+        else:
+            leftside.set_velocity(potentialLeftSpeed,PERCENT)
+            rightside.set_velocity(potentialRightSpeed,PERCENT)
+
+            
         leftside.spin(FORWARD)
         rightside.spin(FORWARD)
 
@@ -82,7 +97,7 @@ def nonDriveComponents():
     controller_1.buttonY.pressed(activateMogo)
     controller_1.buttonB.pressed(deactivateMogo)
 
-def rumbleBumble():
+def controllerRumble():
     while True:
         if brain.timer.time(SECONDS) == 10:
             controller_1.rumble(".....")
@@ -95,6 +110,17 @@ def rumbleBumble():
         if brain.timer.time(SECONDS) == 50:
             controller_1.rumble(".")
 
-driveThread = Thread(joystickDrive)
-nonDriveComponentsThread = Thread(nonDriveComponents)
-rumbleBumbleThread = Thread(rumbleBumble)
+
+
+
+
+def autonomous():
+    pass
+
+
+def driver_control():
+    driveThread = Thread(joystickDrive)
+    nonDriveComponentsThread = Thread(nonDriveComponents)
+    rumbleThread = Thread(controllerRumble)
+
+
