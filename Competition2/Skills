@@ -22,6 +22,11 @@ topIntake = Motor(Ports.PORT8, GearSetting.RATIO_6_1, True)
 
 fullIntake = MotorGroup(bottomIntake,topIntake)
 
+
+# lady brown
+ladyBrown = Motor(Ports.PORT4, GearSetting.RATIO_18_1, False)
+ladyBrown.set_stopping(HOLD)
+ladyBrown.set_velocity(100,PERCENT)
 mogomech = DigitalOut(brain.three_wire_port.c)
 bot = DriveTrain(rightside, leftside, 110, 12.75, 12, INCHES)
 controller_1 = Controller(PRIMARY)
@@ -90,12 +95,15 @@ def nonDriveComponents():
     def reverseIntake():
         fullIntake.set_velocity(100,PERCENT)
         fullIntake.spin(REVERSE)
+
+
     
     controller_1.buttonR2.pressed(startIntake)
     controller_1.buttonR1.pressed(reverseIntake)
     controller_1.buttonL2.pressed(stopIntake)
     controller_1.buttonY.pressed(activateMogo)
     controller_1.buttonB.pressed(deactivateMogo)
+
 
 def controllerRumble():
     while True:
@@ -109,6 +117,36 @@ def controllerRumble():
             controller_1.rumble("..")
         if brain.timer.time(SECONDS) == 50:
             controller_1.rumble(".")
+ladyOn = False
+controller_1_up_down_buttons_control_motors_stopped = True
+
+# define a task that will handle monitoring inputs from controller_1
+def rc_auto_loop_function_controller_1():
+    global controller_1_up_down_buttons_control_motors_stopped, remote_control_code_enabled
+    # process the controller input every 20 milliseconds
+    # update the motors based on the input values
+    while True:
+        if remote_control_code_enabled:
+            # check the buttonUp/buttonDown status
+            # to control motor_1
+            if controller_1.buttonUp.pressing():
+                ladyBrown.spin(FORWARD)
+                controller_1_up_down_buttons_control_motors_stopped = False
+            elif controller_1.buttonDown.pressing():
+                ladyBrown.spin(REVERSE)
+                controller_1_up_down_buttons_control_motors_stopped = False
+            elif not controller_1_up_down_buttons_control_motors_stopped:
+                ladyBrown.stop()
+                # set the toggle so that we don't constantly tell the motor to stop when
+                # the buttons are released
+                controller_1_up_down_buttons_control_motors_stopped = True
+        # wait before repeating the process
+        wait(20, MSEC)
+
+# define variable for remote controller enable/disable
+remote_control_code_enabled = True
+    
+
 
 
 
@@ -122,5 +160,6 @@ def driver_control():
     driveThread = Thread(joystickDrive)
     nonDriveComponentsThread = Thread(nonDriveComponents)
     rumbleThread = Thread(controllerRumble)
+    rc_auto_loop_thread_controller_1 = Thread(rc_auto_loop_function_controller_1)
 
-
+competition = Competition(driver_control, autonomous)
