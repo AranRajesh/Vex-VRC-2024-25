@@ -16,6 +16,7 @@ rightsideBack = Motor(Ports.PORT7, GearSetting.RATIO_18_1, False)
 rightside = MotorGroup(rightsideFront, rightsideMiddle, rightsideBack)
 
 botInertial = Inertial(Ports.PORT9)
+
 # Bottom INtake : 10
 bottomIntake = Motor(Ports.PORT10, GearSetting.RATIO_18_1, False)
 #Top: 8
@@ -35,7 +36,7 @@ ladyKP = 1.3
 
 
 mogomech = DigitalOut(brain.three_wire_port.c)
-bot = SmartDrive(rightside, leftside, botInertial, 110, 12.75, 12, INCHES)
+bot = SmartDrive(leftside, rightside, botInertial, 110, 12.75, 12, INCHES)
 controller_1 = Controller(PRIMARY)
 
 
@@ -84,6 +85,8 @@ def joystickDrive():
             
         leftside.spin(FORWARD)
         rightside.spin(FORWARD)
+
+
 def activateMogo():
     mogomech.set(True)
 
@@ -103,11 +106,11 @@ def reverseIntake():
 
 def nonDriveComponents():
     
-    def move_arm_to_target(): 
+    def move_arm_to_target():
         while True:
                 
             current_position = ladyRotation.position()
-            error = 27 - current_position
+            error = 22 - current_position
             
 
             motor_power = ladyKP * error
@@ -182,51 +185,12 @@ def intakeCode():
         else:
             fullIntake.stop()
            
-nonDrivecomponetnts()
+
+
        
 
 
 
-
-def autonomous():
-    inertial.calibrate()
-    bot.set_heading(0)
-    controller_1.screen.print("Running Skills Autoun")
-~    
-~    controller_1.screen.print("I PRAY TO THE RNG GODS")
-~    bot.set_drive_velocity(40,PERCENT)
-~    bot.set_turn_velocity(15,PERCENT)
-~    bot.drive_for(REVERSE, 3,INCHES)
-~    bot.turn_for(RIGHT, 85,DEGREES)
-~    bot.set_drive_velocity(50,PERCENT)
-~    bot.drive_for(REVERSE, 9,INCHES)
-~    mogoout()
-~    bot.turn_for(RIGHT, 84,DEGREES)
-~    startIntake()
-~    bot.drive_for(FORWARD, 8,INCHES)
-~    bot.turn_for(RIGHT, 89,DEGREES)
-~    bot.drive_for(FORWARD, 7,INCHES)
-~    bot.turn_for(RIGHT, 87,DEGREES)
-~    bot.drive_for(FORWARD, 6,INCHES)
-    wait(0.3,SECONDS)
-    bot.drive_for(FORWARD, 5,INCHES)
-    bot.drive_for(REVERSE, 10,INCHES)
-    bot.turn_for(LEFT, 37,DEGREES)
-    bot.drive_for(FORWARD, 6,INCHES)
-    bot.turn_for(LEFT, 34,DEGREES)
-    bot.drive_for(FORWARD, 7,INCHES)
-    wait(3, SECONDS)
-    stopIntake()
-    reverseIntake()
-    wait(0.5,SECONDS)
-    stopIntake()
-    bot.drive_for(REVERSE, 3,INCHES)
-    bot.drive_for(REVERSE, 4,INCHES)
-    bot.turn_for(LEFT, 160,DEGREES)
-    bot.drive_for(REVERSE, 7,INCHES)
-    mogoin()
-    bot.set_drive_velocity(100,PERCENT)
-    bot.drive_for(FORWARD, 10,INCHES)
 
 
 def driver_control():
@@ -235,5 +199,10 @@ def driver_control():
     rumbleThread = Thread(controllerRumble)
     rc_auto_loop_function_controller_1thread = Thread(rc_auto_loop_function_controller_1)
     intakeThread = Thread(intakeCode)
+
+
+def autonomous():
+    pass
+
 
 competition = Competition(driver_control, autonomous)
