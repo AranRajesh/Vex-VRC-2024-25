@@ -84,26 +84,26 @@ def joystickDrive():
             
         leftside.spin(FORWARD)
         rightside.spin(FORWARD)
+def activateMogo():
+    mogomech.set(True)
+
+def deactivateMogo():
+    mogomech.set(False)
+
+def startIntake():
+    fullIntake.set_velocity(100,PERCENT)
+    fullIntake.spin(FORWARD)
+
+def stopIntake():
+    fullIntake.stop()
+
+def reverseIntake():
+    fullIntake.set_velocity(100,PERCENT)
+    fullIntake.spin(REVERSE)
 
 def nonDriveComponents():
-    def activateMogo():
-        mogomech.set(True)
-
-    def deactivateMogo():
-        mogomech.set(False)
-
-    def startIntake():
-        fullIntake.set_velocity(100,PERCENT)
-        fullIntake.spin(FORWARD)
-
-    def stopIntake():
-        fullIntake.stop()
-
-    def reverseIntake():
-        fullIntake.set_velocity(100,PERCENT)
-        fullIntake.spin(REVERSE)
-
-    def move_arm_to_target():
+    
+    def move_arm_to_target(): 
         while True:
                 
             current_position = ladyRotation.position()
@@ -182,8 +182,7 @@ def intakeCode():
         else:
             fullIntake.stop()
            
-
-
+nonDrivecomponetnts()
        
 
 
@@ -226,8 +225,8 @@ def autonomous():
     bot.turn_for(LEFT, 160,DEGREES)
     bot.drive_for(REVERSE, 7,INCHES)
     mogoin()
-~    bot.set_drive_velocity(100,PERCENT)
-~    bot.drive_for(FORWARD, 10,INCHES)
+    bot.set_drive_velocity(100,PERCENT)
+    bot.drive_for(FORWARD, 10,INCHES)
 
 
 def driver_control():
