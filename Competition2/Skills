@@ -7,11 +7,11 @@ brain=Brain()
 
 # Robot configuration code
 leftsideFront = Motor(Ports.PORT18, GearSetting.RATIO_18_1, True)
-leftsideMiddle = Motor(Ports.PORT2, GearSetting.RATIO_18_1, False)
+leftsideMiddle = Motor(Ports.PORT2, GearSetting.RATIO_18_1, True)
 leftsideBack = Motor(Ports.PORT16, GearSetting.RATIO_18_1, True)
 leftside = MotorGroup(leftsideFront, leftsideMiddle, leftsideBack)
 rightsideFront = Motor(Ports.PORT19, GearSetting.RATIO_18_1, False)
-rightsideMiddle = Motor(Ports.PORT5, GearSetting.RATIO_18_1, True)
+rightsideMiddle = Motor(Ports.PORT5, GearSetting.RATIO_18_1, False)
 rightsideBack = Motor(Ports.PORT7, GearSetting.RATIO_18_1, False)
 rightside = MotorGroup(rightsideFront, rightsideMiddle, rightsideBack)
 
@@ -65,22 +65,35 @@ wait(200, MSEC)
 # clear the console to make sure we don't have the REPL in the console
 print("\033[2J")
 
+def exponentialDrive():
+    # x₁ = Left Motor X = [Controller] [3] position + [Controller] [1] position
+        # x₂ = Right Motor X = [Controller] [3] position - [Controller] [1] position
+    while True:   
+        # Sets each motor's velocity to 0.0001x³ (shown as 0.0001 * x * x * x)
+        leftsideFront.set_velocity((0.0001 * (((controller_1.axis3.position() + controller_1.axis1.position()) * (controller_1.axis3.position() + controller_1.axis1.position())) * (controller_1.axis3.position() + controller_1.axis1.position()))), PERCENT)
+        leftsideMiddle.set_velocity((0.0001 * (((controller_1.axis3.position() + controller_1.axis1.position()) * (controller_1.axis3.position() + controller_1.axis1.position())) * (controller_1.axis3.position() + controller_1.axis1.position()))), PERCENT)
+        leftsideBack.set_velocity((0.0001 * (((controller_1.axis3.position() + controller_1.axis1.position()) * (controller_1.axis3.position() + controller_1.axis1.position())) * (controller_1.axis3.position() + controller_1.axis1.position()))), PERCENT)
+        
+        rightsideFront.set_velocity((0.0001 * (((controller_1.axis3.position() - controller_1.axis1.position()) * (controller_1.axis3.position() - controller_1.axis1.position())) * (controller_1.axis3.position() - controller_1.axis1.position()))), PERCENT)
+        rightsideMiddle.set_velocity((0.0001 * (((controller_1.axis3.position() - controller_1.axis1.position()) * (controller_1.axis3.position() - controller_1.axis1.position())) * (controller_1.axis3.position() - controller_1.axis1.position()))), PERCENT)
+        rightsideBack.set_velocity((0.0001 * (((controller_1.axis3.position() - controller_1.axis1.position()) * (controller_1.axis3.position() - controller_1.axis1.position())) * (controller_1.axis3.position() - controller_1.axis1.position()))), PERCENT)
+        
+        # Spins motor according to the velocity set
+        leftsideFront.spin(FORWARD)
+        leftsideMiddle.spin(FORWARD)
+        leftsideBack.spin(FORWARD)
+
+        rightsideFront.spin(FORWARD)
+        rightsideMiddle.spin(FORWARD)
+        rightsideBack.spin(FORWARD)
+
+
 def joystickDrive():
     while True:
         potentialLeftSpeed = controller_1.axis1.position() + controller_1.axis3.position()
         potentialRightSpeed = controller_1.axis3.position() - controller_1.axis1.position()
-        if potentialLeftSpeed > potentialRightSpeed:
-            leftside.set_velocity(potentialLeftSpeed / 2,PERCENT)
-            rightside.set_velocity(potentialRightSpeed / 2,PERCENT)
-
-
-        elif potentialLeftSpeed < potentialRightSpeed:
-            leftside.set_velocity(potentialLeftSpeed / 2,PERCENT)
-            rightside.set_velocity(potentialRightSpeed / 2,PERCENT)
-
-        else:
-            leftside.set_velocity(potentialLeftSpeed,PERCENT)
-            rightside.set_velocity(potentialRightSpeed,PERCENT)
+        leftside.set_velocity(potentialLeftSpeed,PERCENT)
+        rightside.set_velocity(potentialRightSpeed,PERCENT)
 
             
         leftside.spin(FORWARD)
@@ -187,22 +200,63 @@ def intakeCode():
            
 
 
-       
+def autonomous():
+    controller_1.screen.print("I PRAY TO THE RNG GODS!")
+    brain.screen.print("I PRAY TO THE RNG GODS!")
+    fullIntake.set_velocity(100,PERCENT)
+    ladyBrown.spin(FORWARD)
+    wait(1.5,SECONDS)
+    ladyBrown.stop()
+    ladyBrown.spin(REVERSE)
+    wait(1.5,SECONDS)
+    ladyBrown.stop()
+    bot.drive_for(REVERSE, 4,INCHES)
+    bot.turn_for(RIGHT, 90,DEGREES)
+    bot.drive_for(REVERSE, 7, INCHES)
+    activateMogo()
+    bot.turn_for(RIGHT, 80,DEGREES)
+    fullIntake.spin(FORWARD)
+    bot.drive_for(FORWARD, 8,INCHES)
+    bot.turn_for(RIGHT, 93,DEGREES)
+    bot.drive_for(FORWARD, 10.5,INCHES)
+    bot.turn_for(LEFT, 90)
+    bot.drive_for(FORWARD, 10)
+    bot.turn_for(RIGHT, 5)
+    bot.set_drive_velocity(60, PERCENT)
+    bot.drive_for(REVERSE, 10)
+    bot.turn_for(RIGHT,35)
+    bot.drive_for(REVERSE, 12, INCHES)
+    bot.turn_for(RIGHT, 34)
+    bot.drive_for(FORWARD, 8)
+    wait(1000,MSEC)
+    bot.drive_for(REVERSE, 4)
+    bot.turn_for(RIGHT, 60)
+    bot.drive_for(FORWARD, 3)
+    bot.drive_for(REVERSE, 3)
+    bot.turn_for(RIGHT, 150)
+    bot.drive_for(REVERSE, 10)
+    deactivateMogo()
+    bot.drive_for(FORWARD, 10)
+    
 
+    
+
+
+    
 
 
 
 
 def driver_control():
-    driveThread = Thread(joystickDrive)
+    
+    driveThread = Thread(exponentialDrive)
     nonDriveComponentsThread = Thread(nonDriveComponents)
     rumbleThread = Thread(controllerRumble)
     rc_auto_loop_function_controller_1thread = Thread(rc_auto_loop_function_controller_1)
     intakeThread = Thread(intakeCode)
 
 
-def autonomous():
-    pass
 
+ 
 
 competition = Competition(driver_control, autonomous)
